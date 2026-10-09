@@ -1,0 +1,84 @@
+{
+  "name": "fees_lookup_database",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "sender_email"
+            },
+            {
+              "name": "roll_number"
+            },
+            {
+              "name": "application_number"
+            }
+          ]
+        }
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "executed by other workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        272,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "fees",
+        "filters": {
+          "conditions": []
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        576,
+        352
+      ],
+      "id": "09760cc6-a2a7-4008-b94b-66608308810c",
+      "name": "Get many rows",
+      "credentials": {
+        "supabaseApi": {
+          "id": "n2biQJBRkyd6DXKu",
+          "name": "student_db"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "executed by other workflow": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromAList",
+    "availableInMCP": false,
+    "callerIds": "4ZRnvceHxVjK07V6"
+  },
+  "versionId": "07d51ea8-b2e6-40c0-9c8d-94c4070772b8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "81ce0036c8aec043fce1b4c1754e5ee2bcdc62e916e0bdfeec4d8edf5b27be1b"
+  },
+  "nodeGroups": [],
+  "id": "ReYyIHLI6JLMGWCC",
+  "tags": []
+}

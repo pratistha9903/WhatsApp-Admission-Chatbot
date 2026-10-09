@@ -1,0 +1,375 @@
+{
+  "name": "University Admission CHATBOT – CONNECTED to ( University Admission- Student Record Manager)",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "adb439f4-695e-4cb4-ba8c-48af5fc245b0",
+      "name": "WhatsApp Trigger",
+      "webhookId": "939ad579-e417-4b45-ac27-1aed69147abb",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "JmkngXtMNE3b1Pgs",
+          "name": "ai_councelor"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "=## OVERVIEW\n\nYou are a University Admission Counselling Assistant on WhatsApp. Collect applicant information conversationally, validate answers, maintain conversation continuity, and assess eligibility using the demonstration criteria below.\n\n## TOOLS\nSimple Memory: Remember the applicant's answers and conversation progress.\nCall n8n Workflow Tool: Save or update applicant information in Google Sheets through the Execute Sub-workflow.\n\n## RULES\n\nIdentify the applicant using the WhatsApp Trigger phone number: {{ $('WhatsApp Trigger').item.json.messages[0].from }}. Never ask for it again.\nReply naturally to greetings and casual messages without calling the database workflow.\n\nCollect applicable details in this order, asking one question per message: Full_Name, Email, Age, Xth_Percentage, XII_Status, XII_Percentage (if Passed), Core-subject percentage (if applicable), Academic_Gap_Years, Course_Program, Course_Specialization (if applicable), Graduation_Percentage (if applicable), Graduation_Gap_Years (if applicable\n\nValidate emails, positive ages, percentages between 0 and 100, XII status (Passed or Awaited), and nonnegative gap years. Never invent information.\nWhenever the applicant provides valid new or corrected admission information, call the Call n8n Workflow Tool before responding. Pass the phone number and all currently known, valid applicant details. Save progressively; do not wait until the conversation is complete.\nThe sub-workflow must find the existing record using Phone_Number, preserve previously saved valid values, and update the record or create a new one without duplicates.\n\nAfter calling the tool, inspect its result. If successful, continue the conversation naturally. Do not announce or mention that data was saved unless the applicant explicitly asks. Ask the next unanswered applicable question in the same response.\nIf saving fails, do not claim success. Briefly explain the issue only when it affects the applicant's request, and retry only when appropriate.\nUse Simple Memory to continue the conversation without repeating answered questions. Memory does not prove that data was saved.\nApply only these demonstration eligibility criteria: overall academic aggregate ≥ 60%, core-subject aggregate ≥ 60% where applicable, and academic gap ≤ 2 years. Do not calculate aggregates without the required marks and calculation method. Use only Eligible, Not Eligible, or Pending Verification. These are not verified official university requirements.\n\nAsk for XII percentage only if XII status is Passed. Use Pending Verification when required results or information are missing. Never guarantee admission.\nUse these exact Google Sheets columns: Phone_Number, Full_Name, Email, Age, Xth_Percentage, XII_Status, XII_Percentage, Core-subject percentage, Academic_Gap_Years, Course_Program, Course_Specialization, Graduation_Percentage, Graduation_Gap_Years, Eligibility_Status, Eligibility_Reasons.\nOnce all applicable details are collected, provide a concise summary of the applicant's verified details, eligibility status, reasons, and missing information. \n\nDo not provide routine save confirmations.\n\n## REQUIRED APPLICANT INFORMATION\n\nCollect the following fields in EXACTLY this order:\n\n1. Full_Name\n2. Email\n3. Age\n4. Xth_Percentage\n5. XII_Status\n6. XII_Percentage\n7. Core-subject percentage\n8. Academic_Gap_Years\n9. Course_Program\n10. Course_Specialization\n11. Graduation_Percentage\n12. Graduation_Gap_Years\n\n## QUESTIONING RULES\n\nAsk ONE question at a time.\n\nAfter every applicant message:\n\n1. Extract every valid field the applicant provided.\n2. Preserve all previously collected valid information.\n3. Determine which fields are already answered.\n4. Ask for the FIRST unanswered applicable field from the list above.\n5. Never skip a field simply because another field was answered.\n6. Never assume an unanswered field is 0, blank, false, or not applicable.\n7. Never invent or infer a value.\n\nA field is ANSWERED only if the applicant explicitly provides a valid value.\n\nThe following mean UNANSWERED:\n- null\n- undefined\n- empty string\n- missing field\n- automatically generated default values\n- values inferred by the AI\n\nIMPORTANT:\nIf Academic_Gap_Years has not been explicitly provided, you MUST ask for it.\n\nFor example:\n\"How many years of academic gap have you had?\"\n\nIf the applicant says \"No gap\", record:\nAcademic_Gap_Years = 0\n\nIf the applicant explicitly says \"0 years\", record:\nAcademic_Gap_Years = 0\n\nDo NOT treat an automatically generated 0 as an applicant answer.\n\n## CONDITIONAL QUESTIONS\n\nXII_Percentage:\nAsk only when XII_Status = Passed.\n\nIf XII_Status = Awaited, do not ask XII_Percentage.\n\nCore-subject percentage:\nAsk when applicable to the applicant's academic eligibility.\n\nCourse_Specialization:\nAsk when the selected Course_Program has a specialization.\n\nGraduation_Percentage:\nAsk when the applicant has a graduation qualification / is applying to a program where graduation marks are applicable.\n\nGraduation_Gap_Years:\nAsk when graduation information is applicable.\n\nIf a conditional field is genuinely not applicable, mark it as null and move to the next applicable field. Do not assume it is not applicable without sufficient information.\n\n## STRICT COMPLETION CHECK\n\nBefore asking a question, internally check this exact sequence:\n\nFull_Name → Email → Age → Xth_Percentage → XII_Status → XII_Percentage → Core-subject percentage → Academic_Gap_Years → Course_Program → Course_Specialization → Graduation_Percentage → Graduation_Gap_Years\n\nAsk the FIRST unanswered applicable field.\n\nDo not jump ahead.\n\nDo not finish the counselling process until every applicable field has either:\n- a valid applicant-provided value, or\n- been explicitly determined to be not applicable.\n\nBe friendly, concise, and professional."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "ebf85429-db54-44f2-b50f-dddf07d4a41c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1417574778097936",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        0
+      ],
+      "id": "02616861-4018-4957-96e4-a7bc132d5025",
+      "name": "Send message",
+      "webhookId": "eed02ed0-1cea-4d50-b148-3316566ae9b5",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "3lnVoKHdugUzoygK",
+          "name": "ai_councelor"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "apodex/apodex-1.1-mini:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        288
+      ],
+      "id": "6ae0dad0-f11b-4f1a-9815-21f9dcf16e09",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "VmGvYiLOamydbJUE",
+          "name": "shivangi"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        192,
+        352
+      ],
+      "id": "12688850-acc3-460d-9d84-4f25b5ce9f84",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "Saves or updates an applicant's admission information in Google Sheets. Call this tool whenever the applicant provides a valid new or corrected admission detail. Pass the applicant's WhatsApp phone number and all currently known, valid applicant fields. The workflow returns the actual database operation status. Do not call for greetings or casual messages.",
+        "workflowId": {
+          "__rl": true,
+          "value": "jX5ftsSiXgM3oVZQ",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/jX5ftsSiXgM3oVZQ",
+          "cachedResultName": "University Admission System – Student Record Manager"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Name_', ``, 'string') }}",
+            "Email": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Email', ``, 'string') }}",
+            "Phone number": "={{ $json.messages[0].from }}",
+            "10th %": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('10th__', ``, 'number') }}",
+            "12th %": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('12th__', ``, 'number') }}",
+            "Core subject %": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Core_subject__', ``, 'number') }}",
+            "Graduation %": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Graduation__', ``, 'number') }}",
+            "Interested Course": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Interested_Course', ``, 'string') }}",
+            "Graduation_Gap_Years": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Graduation_Gap_Years', ``, 'number') }}",
+            "Course_Specialization": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Course_Specialization', ``, 'string') }}",
+            "Academic_Gap_Years": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Academic_Gap_Years', ``, 'number') }}",
+            "XII th status": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('XII_th_status', ``, 'string') }}",
+            "Eligibility_Status": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Eligibility_Status', ``, 'string') }}",
+            "Eligibility_Reasons": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Eligibility_Reasons', ``, 'string') }}",
+            "Age": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Age', ``, 'number') }}"
+          },
+          "matchingColumns": [
+            ""
+          ],
+          "schema": [
+            {
+              "id": "Name ",
+              "displayName": "Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Phone number",
+              "displayName": "Phone number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "10th %",
+              "displayName": "10th %",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "XII th status",
+              "displayName": "XII th status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "12th %",
+              "displayName": "12th %",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "Core subject %",
+              "displayName": "Core subject %",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "Academic_Gap_Years",
+              "displayName": "Academic_Gap_Years",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "Graduation %",
+              "displayName": "Graduation %",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "Interested Course",
+              "displayName": "Interested Course",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Graduation_Gap_Years",
+              "displayName": "Graduation_Gap_Years",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "Course_Specialization",
+              "displayName": "Course_Specialization",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Eligibility_Status",
+              "displayName": "Eligibility_Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Eligibility_Reasons",
+              "displayName": "Eligibility_Reasons",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        464,
+        336
+      ],
+      "id": "cfaab1bf-f344-4b2c-87f6-0a9b0a34428b",
+      "name": "Call 'University Admission System – Student Record Manager'"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'University Admission System – Student Record Manager'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "none",
+    "availableInMCP": false,
+    "callerIds": "jX5ftsSiXgM3oVZQ"
+  },
+  "versionId": "ea032c0c-5e07-486b-86b5-eb5bd4a0fdeb",
+  "meta": {
+    "instanceId": "9ca56e7e13924ea5842ff551d0c5d049ae4a6f3f5ca5c992981e537f56a380a0"
+  },
+  "nodeGroups": [],
+  "id": "cejxl2NXBrt0Z4BM",
+  "tags": []
+}

@@ -1,0 +1,519 @@
+z{
+  "name": "University Admission System – Student Record Manager",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Name "
+            },
+            {
+              "name": "Email"
+            },
+            {
+              "name": "Phone number"
+            },
+            {
+              "name": "10th %",
+              "type": "number"
+            },
+            {
+              "name": "XII th status"
+            },
+            {
+              "name": "12th %",
+              "type": "number"
+            },
+            {
+              "name": "Core subject %",
+              "type": "number"
+            },
+            {
+              "name": "Academic_Gap_Years",
+              "type": "number"
+            },
+            {
+              "name": "Graduation %",
+              "type": "number"
+            },
+            {
+              "name": "Interested Course"
+            },
+            {
+              "name": "Graduation_Gap_Years",
+              "type": "number"
+            },
+            {
+              "name": "Interested Course"
+            },
+            {
+              "name": "Course_Specialization"
+            },
+            {
+              "name": "Eligibility_Status"
+            },
+            {
+              "name": "Eligibility_Reasons"
+            },
+            {
+              "name": "Age",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "id": "b0fd2d3b-a0fe-46e4-a202-4fc11864733f",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1",
+              "name": "Phone_Number",
+              "value": "={{ $json['Phone number'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f2",
+              "name": "Full_Name",
+              "value": "={{ $json['Name '] }}",
+              "type": "string"
+            },
+            {
+              "id": "f3",
+              "name": "Email",
+              "value": "={{ $json.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "f5",
+              "name": "Xth_Percentage",
+              "value": "={{ $json['10th %'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f6",
+              "name": "XII_Status",
+              "value": "={{ $json['XII th status'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f7",
+              "name": "XII_Percentage",
+              "value": "={{ $json['12th %'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f8",
+              "name": "Core-subject percentage",
+              "value": "={{ $json['Core subject %'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f9",
+              "name": "Academic_Gap_Years",
+              "value": "={{ $json.Academic_Gap_Years }}",
+              "type": "string"
+            },
+            {
+              "id": "f10",
+              "name": "Course_Program",
+              "value": "={{ $json['Interested Course'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f11",
+              "name": "Course_Specialization",
+              "value": "={{ $json.Course_Specialization }}",
+              "type": "string"
+            },
+            {
+              "id": "f12",
+              "name": "Graduation_Percentage",
+              "value": "={{ $json['Graduation %'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f13",
+              "name": "Graduation_Gap_Years",
+              "value": "={{ $('When Executed by Another Workflow').first().json.Graduation_Gap_Years }}",
+              "type": "string"
+            },
+            {
+              "id": "f14",
+              "name": "Eligibility_Status",
+              "value": "={{ $('When Executed by Another Workflow').first().json.Eligibility_Status }}",
+              "type": "string"
+            },
+            {
+              "id": "f15",
+              "name": "Eligibility_Reasons",
+              "value": "={{ $('When Executed by Another Workflow').first().json.Eligibility_Reasons }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a586b30c-1b2f-4775-96a2-d700483532bc",
+      "name": "Prepare Incoming Student Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1j--N_JjEuklqNyjC4J0kQZhsexGFD9X91PypmonJYqE",
+          "mode": "list",
+          "cachedResultName": "Student DB of whatsapp chatbot",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1j--N_JjEuklqNyjC4J0kQZhsexGFD9X91PypmonJYqE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1j--N_JjEuklqNyjC4J0kQZhsexGFD9X91PypmonJYqE/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Phone_Number",
+              "lookupValue": "={{ $('Prepare Incoming Student Data').item.json.Phone_Number }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bce3aefd-d488-44a0-b4b0-dbf0f2f0f29d",
+      "name": "Get row(s) in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        0
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "MXfNAL4oOh752Jrv",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const incoming = $('Prepare Incoming Student Data').first().json;\n\nconst rows = $('Get row(s) in sheet').all()\n  .map(item => item.json)\n  .filter(row => row.Phone_Number);\n\nconst existing = rows[0] || {};\nconst merged = { ...existing };\n\nfor (const [key, value] of Object.entries(incoming)) {\n  if (\n    value !== undefined &&\n    value !== null &&\n    String(value).trim() !== ''\n  ) {\n    merged[key] = value;\n  }\n}\n\nmerged.Phone_Number = incoming.Phone_Number;\n\nreturn [{ json: merged }];"
+      },
+      "id": "006e4f7f-525f-4463-a45d-c62d9b0f2174",
+      "name": "Merge Existing and Incoming Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1j--N_JjEuklqNyjC4J0kQZhsexGFD9X91PypmonJYqE",
+          "mode": "list",
+          "cachedResultName": "Student DB of whatsapp chatbot",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1j--N_JjEuklqNyjC4J0kQZhsexGFD9X91PypmonJYqE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1j--N_JjEuklqNyjC4J0kQZhsexGFD9X91PypmonJYqE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Phone_Number": "={{ $('Prepare Incoming Student Data').item.json.Phone_Number }}",
+            "Full_Name": "={{ $('Prepare Incoming Student Data').item.json.Full_Name }}",
+            "Email": "={{ $('Prepare Incoming Student Data').item.json.Email }}",
+            "Age": "={{ $('Prepare Incoming Student Data').item.json.Age }}",
+            "Xth_Percentage": "={{ $('Prepare Incoming Student Data').item.json.Xth_Percentage }}",
+            "XII_Status": "={{ $('Prepare Incoming Student Data').item.json.XII_Status }}",
+            "XII_Percentage": "={{ $('Prepare Incoming Student Data').item.json.XII_Percentage }}",
+            "Core-subject percentage": "={{ $('Prepare Incoming Student Data').item.json['Core-subject percentage'] }}",
+            "Academic_Gap_Years": "={{ $('Prepare Incoming Student Data').item.json.Academic_Gap_Years }}",
+            "Course_Program": "={{ $('Prepare Incoming Student Data').item.json.Course_Program }}",
+            "Course_Specialization": "={{ $('Prepare Incoming Student Data').item.json.Course_Specialization }}",
+            "Graduation_Percentage": "={{ $('Prepare Incoming Student Data').item.json.Graduation_Percentage }}",
+            "Graduation_Gap_Years": "={{ $('Prepare Incoming Student Data').item.json.Graduation_Gap_Years }}",
+            "Eligibility_Status": "={{ $('Prepare Incoming Student Data').item.json.Eligibility_Status }}",
+            "Eligibility_Reasons": "={{ $('Prepare Incoming Student Data').item.json.Eligibility_Reasons }}"
+          },
+          "matchingColumns": [
+            "Phone_Number"
+          ],
+          "schema": [
+            {
+              "id": "Phone_Number",
+              "displayName": "Phone_Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Full_Name",
+              "displayName": "Full_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Xth_Percentage",
+              "displayName": "Xth_Percentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "XII_Status",
+              "displayName": "XII_Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "XII_Percentage",
+              "displayName": "XII_Percentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Core-subject percentage",
+              "displayName": "Core-subject percentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Academic_Gap_Years",
+              "displayName": "Academic_Gap_Years",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Course_Program",
+              "displayName": "Course_Program",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Course_Specialization",
+              "displayName": "Course_Specialization",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Graduation_Percentage",
+              "displayName": "Graduation_Percentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Graduation_Gap_Years",
+              "displayName": "Graduation_Gap_Years",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Eligibility_Status",
+              "displayName": "Eligibility_Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Eligibility_Reasons",
+              "displayName": "Eligibility_Reasons",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "bf101263-d320-4ea6-9498-64b4e674dcfd",
+      "name": "Append or update row in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "MXfNAL4oOh752Jrv",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "Name ": "Pratistha",
+          "Email": "pratistha9903@gmail.com",
+          "Phone number": "919716679325",
+          "10th %": 93,
+          "XII th status": "Passed",
+          "12th %": 89,
+          "Core subject %": 0,
+          "Academic_Gap_Years": 0,
+          "Graduation %": 0,
+          "Interested Course": "",
+          "Graduation_Gap_Years": 0,
+          "Course_Specialization": "",
+          "Eligibility_Status": "Pending Verification",
+          "Eligibility_Reasons": "Details being collected",
+          "Age": 22
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Prepare Incoming Student Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Incoming Student Data": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge Existing and Incoming Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Existing and Incoming Data": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromAList",
+    "availableInMCP": false,
+    "callerIds": "cejxl2NXBrt0Z4BM",
+    "saveDataSuccessExecution": "all"
+  },
+  "versionId": "19143a54-6952-4efe-b856-97fbfeb1cf61",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9ca56e7e13924ea5842ff551d0c5d049ae4a6f3f5ca5c992981e537f56a380a0"
+  },
+  "nodeGroups": [],
+  "id": "jX5ftsSiXgM3oVZQ",
+  "tags": []
+}

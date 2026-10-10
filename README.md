@@ -8,6 +8,12 @@ Admission teams often receive repetitive questions and have to collect the same 
 
 The goal is to make initial enquiry handling more consistent and make information easier for the admissions team to review. Any eligibility result is preliminary; the institution remains responsible for confirming eligibility and admission.
 
+## Workflow
+<img width="988" height="500" alt="Image" src="https://github.com/user-attachments/assets/ae5543b3-8a56-4e7e-b40c-41ff2466941c" />
+
+<img width="1346" height="392" alt="Image" src="https://github.com/user-attachments/assets/4beb0d8f-9bce-4579-a22e-5a2a8ac5d7c3" />
+
+
 ## What the workflow does
 
 - Receives incoming messages through a WhatsApp Trigger.
